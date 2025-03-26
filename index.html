@@ -4,38 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Date tu paz mental</title>
-  <!-- Se agrega el enlace a Google Fonts para la tipografía Nunito -->
-  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* Variables de colores pasteles y ajustes UX/UI */
-      --pastel-primario: #81C784;    /* Verde pastel más apagado para el botón principal */
-      --pastel-off: #F5EBDD;         /* Tono beige/arena para estado OFF */
-      --pastel-accent: #FFDAB9;      /* Tono pastel para botones activos del temporizador */
-      --pastel-toast: #A398D2;       /* Fondo del toast en tono pastel */
-      
-      /* Variables que se mantienen */
-      --verde-spotify: #1DB954;       /* Verde de Spotify */
-      --fuente: 'Nunito', sans-serif; /* Tipografía actualizada a Nunito para una sensación más cercana */
-      --margen: 16px;
+      --verde-marca: #7ED957;           /* Color principal de la marca */
+      --gris-pastel: #D3D3D3;            /* Color para estado OFF */
+      --verde-spotify: #1DB954;          /* Verde de Spotify */
+      --color-toast: #323232;            /* Fondo del mensaje toast */
+      --fuente: Arial, sans-serif;       /* Fuente principal */
+      --margen: 16px;                   /* Margen horizontal */
     }
     /* Reinicio global */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     
-    /* Body ocupa al menos toda la pantalla, con fondo claro menos luminoso y transiciones */
+    /* Body: fondo claro y transiciones; modo oscuro en el body */
     html, body {
       min-height: 100vh;
       font-family: var(--fuente);
-      background-color: #FFF8F0; /* Fondo blanco suavizado */
+      background-color: #f5f5f5;
       color: #333;
       transition: background-color 0.3s, color 0.3s;
     }
-    /* Modo noche */
     body.modo-oscuro {
       background-color: #222;
       color: #eee;
     }
-    /* Forzamos que algunos contenedores muestren el fondo oscuro en modo noche */
     body.modo-oscuro .wrapper,
     body.modo-oscuro .header-container,
     body.modo-oscuro .circle-container,
@@ -74,18 +66,16 @@
     }
     /* Contenedor del botón circular */
     .circle-container {
-      height: calc(70vh - 10px); /* Reserva para header y contenido inferior */
+      height: calc(70vh - 10px); /* Ajusta el alto del contenedor */
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       overflow: hidden;
       background: transparent;
       margin-bottom: var(--margen);
     }
-    /* Botón circular dimensionado con clamp():
-       - Mínimo: 200px
-       - Ideal: 80vw
-       - Máximo: calc(100vh - 150px) */
+    /* Botón circular dimensionado con clamp(): mínimo 200px, ideal 80vw, máximo calc(100vh - 150px) */
     .boton-toggle {
       width: clamp(200px, 80vw, calc(100vh - 150px));
       height: clamp(200px, 80vw, calc(100vh - 150px));
@@ -93,17 +83,67 @@
       border: none;
       font-size: 4em;
       color: #fff;
-      background-color: var(--pastel-primario);
+      background-color: var(--verde-marca);
       cursor: pointer;
       transition: background 0.3s, box-shadow 0.3s, transform 0.1s;
     }
-    /* Estado "oprimido" del botón circular */
     .boton-toggle.off {
-      background-color: var(--pastel-off);
+      background-color: var(--gris-pastel);
       color: #333;
       box-shadow: inset 0 2px 4px rgba(0,128,0,0.2);
     }
     .boton-toggle:active { transform: scale(0.98); }
+    
+    /* Contenedor del switch de frecuencia */
+    .frequency-switch-container {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--fuente);
+      font-size: 1em;
+      color: #333;
+    }
+    /* Estilo del switch */
+    .frequency-switch-container .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+    }
+    .frequency-switch-container .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .frequency-switch-container .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+    .frequency-switch-container .slider:before {
+      position: absolute;
+      content: "";
+      height: 22px;
+      width: 22px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+    .frequency-switch-container .switch input:checked + .slider {
+      background-color: var(--verde-marca);
+    }
+    .frequency-switch-container .switch input:checked + .slider:before {
+      transform: translateX(22px);
+    }
+    .frequency-switch-container .switch-label {
+      user-select: none;
+    }
     
     /* Contenedor del contenido: Temporizador y Donaciones */
     .content-container { background: transparent; }
@@ -132,11 +172,11 @@
     }
     .botones-grid button:active { transform: scale(0.98); }
     .botones-grid button.activo {
-      background: var(--pastel-accent);
+      background: #FFCA28;
       color: #333;
-      box-shadow: inset 0 3px 6px rgba(255,218,185,0.4);
+      box-shadow: inset 0 3px 6px rgba(255,152,0,0.4);
     }
-    /* Sección de donaciones (botones sin modificaciones) */
+    /* Sección de donaciones */
     .donaciones {
       text-align: center;
       background: transparent;
@@ -172,7 +212,7 @@
       top: 20px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--pastel-toast);
+      background: var(--color-toast);
       color: #fff;
       padding: 12px 20px;
       border-radius: 8px;
@@ -201,8 +241,16 @@
     <!-- Contenedor del botón circular -->
     <div class="circle-container">
       <button id="botonToggle" class="boton-toggle">ON</button>
+      <!-- Switch de frecuencia personalizado -->
+      <div class="frequency-switch-container">
+        <label class="switch">
+          <input type="checkbox" id="freqSwitch">
+          <span class="slider"></span>
+        </label>
+        <span class="switch-label" id="freqLabel">852 Hz</span>
+      </div>
     </div>
-    <!-- Contenedor del contenido (Temporizador y Donaciones) -->
+    <!-- Contenedor del contenido: Temporizador y Donaciones -->
     <div class="content-container">
       <h2>Temporizador</h2>
       <div class="botones-grid">
@@ -222,16 +270,35 @@
     </div>
   </div>
   <script>
-    // Variables para el tono sostenido (852 Hz) usando Web Audio API
+    // Variable para la frecuencia actual (por defecto 852 Hz)
+    let currentFrequency = 852;
+    
+    // Actualizar la frecuencia según el switch:
+    const freqSwitch = document.getElementById('freqSwitch');
+    const freqLabel = document.getElementById('freqLabel');
+    freqSwitch.addEventListener('change', () => {
+      if (freqSwitch.checked) {
+        currentFrequency = 432;
+        freqLabel.textContent = "432 Hz";
+      } else {
+        currentFrequency = 852;
+        freqLabel.textContent = "852 Hz";
+      }
+      // Si el tono está sonando, actualizar la frecuencia inmediatamente.
+      if (oscillator) {
+        oscillator.frequency.setValueAtTime(currentFrequency, audioContext.currentTime);
+      }
+    });
+    
+    // Variables para el tono sostenido (852 Hz o 432 Hz) usando Web Audio API
     let audioContext, oscillator, gainNode;
     function startTone() {
       if (!audioContext) {
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
       }
       oscillator = audioContext.createOscillator();
-      oscillator.frequency.setValueAtTime(852, audioContext.currentTime);
+      oscillator.frequency.setValueAtTime(currentFrequency, audioContext.currentTime);
       gainNode = audioContext.createGain();
-      // Cancelar valores programados y establecer ganancia a 0.5 (volumen medio)
       gainNode.gain.cancelScheduledValues(audioContext.currentTime);
       gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
       gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
@@ -254,11 +321,11 @@
     const toast = document.getElementById('toast');
     const sonidoActivacion = document.getElementById('sonidoActivacion');
     const botonTema = document.getElementById('botonTema');
-
+    
     // Al tocar el botón circular manualmente:
-    // Si está "oprimido" (OFF) y se toca, se vuelve a ON, se detiene el tono y se reinician los botones del temporizador.
+    // Si está "oprimido" (OFF) y se toca, se vuelve a ON, se detiene el tono, y se reinician los botones del temporizador.
     botonToggle.addEventListener('click', () => {
-      if(botonToggle.classList.contains('off')){
+      if (botonToggle.classList.contains('off')) {
         botonToggle.classList.remove('off');
         botonToggle.textContent = 'ON';
         stopTone();
@@ -272,27 +339,26 @@
         startTone();
       }
     });
-
+    
     // Cambio de tema (sol/luna)
     botonTema.addEventListener('click', () => {
       document.body.classList.toggle('modo-oscuro');
       botonTema.textContent = document.body.classList.contains('modo-oscuro') ? '🌙' : '☀';
     });
-
+    
     // Función para mostrar el toast (mensaje flotante)
     let toastTimeout;
     function mostrarToast(mensaje) {
       toast.textContent = mensaje;
       toast.classList.add('visible');
-      // Reproducir sonido suave (aunque este audio se usa también para el tono, se reproduce aquí)
       sonidoActivacion.play();
       clearTimeout(toastTimeout);
       toastTimeout = setTimeout(() => { toast.classList.remove('visible'); }, 2500);
     }
-
+    
     // Funcionalidad para los botones del temporizador:
-    // Si se toca un botón del temporizador y el botón circular no está "oprimido" (ON),
-    // se pone a "oprimido" (OFF) e inicia el tono. Se configura un temporizador para volver a ON.
+    // Al tocar un botón del temporizador, si el botón circular no está oprimido, se activa y se inicia el tono.
+    // Se muestra un toast, y se configura un temporizador para que, pasado el tiempo indicado, el botón circular vuelva a ON y se detenga el tono.
     botonesTemporizador.forEach(btn => {
       btn.addEventListener('click', () => {
         const minutes = parseInt(btn.getAttribute('data-minutos'));
@@ -301,16 +367,13 @@
           botonToggle.textContent = 'OFF';
           startTone();
         }
-        // Reiniciar el estado de todos los botones del temporizador
         botonesTemporizador.forEach(b => {
           b.classList.remove('activo');
           b.textContent = b.getAttribute('data-minutos') + ' Minutos';
         });
-        // Activar el botón actual
         btn.classList.add('activo');
         btn.textContent = '⏱ ' + minutes + ' Minutos';
         mostrarToast(`Temporizador activado por ${minutes} minutos`);
-        // Configurar temporizador: después de X minutos, el botón circular vuelve a ON y se detiene el tono.
         if (window.circularTimeout) clearTimeout(window.circularTimeout);
         window.circularTimeout = setTimeout(() => {
           botonToggle.classList.remove('off');
